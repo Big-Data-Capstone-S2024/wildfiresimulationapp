@@ -1,51 +1,163 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* Common form container */
+.form-container {
+  width: 350px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 10px;
+  background: linear-gradient(to bottom, #fff, #dcdcdc);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+/* Input fields */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  font-size: 16px;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+/* Button */
+button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ccc;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #888;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Additional text */
+.additional-text {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
 }
 
-.header {
+.additional-text a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.legend {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 1px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.legend span {
+  padding: 3px 10px;
+  border-radius: 1 px;
+  font-weight: bold;
+  color: white;
+}
+
+.legend .low {
+  background-color: #2eb64d;
+}
+
+.legend .medium {
+  background-color: rgb(11, 102, 11);
+}
+
+.legend .high {
+  background-color: #ff9800;
+}
+
+.legend .very-high {
+  background-color: #dc3545;
+}
+
+.legend .extreme {
+  background-color: #6f42c1;
+}
+
+form {
+  display: absolute;
+  width: 95
+  %;
 }
 
 .header img {
   width: 64px; /* Adjust based on your preference */
+  height: auto;
+  object-fit: contain;
 }
 
-.header .text-gray-600 {
-  margin-left: auto; /* Ensures the email is on the right */
-  font-size: 0.875rem; /* Adjust based on your preference */
+.header .logout-button {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.header .logout-button:hover {
+  background-color: darkgreen;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  width: calc(80% - 60px); /* Adjust the width as needed */
+}
+
+button {
+  width: 120px; /* Width of the search button */;
+  color: blue
+}
+.forecast-container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+.forecast-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.forecast-date, .forecast-location, .forecast-cfb {
+  flex: 1;
+}
+
+.forecast-cfb.low {
+  color: green;
+}
+
+.forecast-cfb.medium {
+  color: orange;
+}
+
+.forecast-cfb.high {
+  color: red;
+}
+
+.forecast-cfb.very-high {
+  color: darkred;
+}
+
+.forecast-cfb.extreme {
+  color: purple;
 }

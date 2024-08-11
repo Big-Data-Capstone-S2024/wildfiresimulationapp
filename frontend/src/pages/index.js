@@ -1,4 +1,3 @@
-// src/pages/index.js
 import { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useRouter } from 'next/router';
@@ -16,11 +15,11 @@ export default function Home() {
         if (session) {
           router.push('/dashboard');
         } else {
-          router.push('/login');
+          router.push('/signup'); // Redirect to signup if no session is found
         }
       } catch (error) {
         console.error('Error checking session:', error.message);
-        router.push('/login');
+        router.push('/signup'); // Handle error by redirecting to signup
       } finally {
         setLoading(false);
       }

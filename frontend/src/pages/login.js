@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useRouter } from 'next/router';
+import React from 'react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
