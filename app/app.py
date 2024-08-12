@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, send_from_directory
 import requests
 from dotenv import load_dotenv
 import os
@@ -6,7 +6,7 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='build')
 
 # Access the environment variables
 supabase_url = os.getenv('SUPABASE_URL')
@@ -31,7 +31,9 @@ def get_users():
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
 
-# The simulation route and model-related code have been removed.
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(app.static_folder, path)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
