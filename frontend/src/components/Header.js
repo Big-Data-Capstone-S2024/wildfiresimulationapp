@@ -9,7 +9,7 @@ export default function Header() {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
         router.push('/login');
       } else {
@@ -23,7 +23,15 @@ export default function Header() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    localStorage.removeItem('supabaseSession'); // Clear session storage
+
+    // Call API to clear session from cookies
+    await fetch('/api/clearSession', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
     router.push('/login'); // Redirect to login page
   };
 

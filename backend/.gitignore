@@ -1,1 +1,15 @@
 .env
+/backend/node_modules
+/backend/venv-3.10
+
+/venv/*
+/.venv/*
+/.venv-3.10/*
+/.venv/bin/*
+
+/backend/venv/*
+/backend/.venv/*
+/backend/.venv-3.10/*
+/backend/.venv/bin/*
+backend/*
+backend/modules/__pycache__/*
