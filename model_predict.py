@@ -4,8 +4,12 @@ from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models import TemporalFusionTransformer
 from pytorch_forecasting.metrics import QuantileLoss
 
+import torch
+print(f"PyTorch version: {torch.__version__}")
+print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"Current device: {torch.cuda.current_device() if torch.cuda.is_available() else 'CPU'}")
 
-with open("train_dataset.pkl", "rb") as f:
+with open("model/train_dataset.pkl", "rb") as f:
     train_dataset = pickle.load(f)
 
 class WeightedQuantileLoss(QuantileLoss):
@@ -25,7 +29,7 @@ class WeightedQuantileLoss(QuantileLoss):
 
 # Define the model
 # Use the weighted loss in the model definition
-tft = TemporalFusionTransformer.from_dataset(
+best_tft = TemporalFusionTransformer.from_dataset(
     train_dataset,
     learning_rate=1e-3,
     hidden_size=64,
@@ -38,8 +42,16 @@ tft = TemporalFusionTransformer.from_dataset(
     reduce_on_plateau_patience=10
 )
 
-best_model_path = "../model/best-checkpoint.ckpt"
-best_tft = TemporalFusionTransformer.load_from_checkpoint(best_model_path)
+best_model_path = "model/best-checkpoint.ckpt"
+
+state_dict = torch.load(best_model_path, map_location=torch.device('cpu'))
+best_tft.load_state_dict(state_dict['state_dict'], strict=False)
+# Load the model on CPU
+# best_tft = TemporalFusionTransformer.load_from_checkpoint(
+#     best_model_path, 
+#     map_location=torch.device('cpu'),  # Forces everything to CPU
+#     strict=False
+# )
 
 validation_dataset = TimeSeriesDataSet.from_dataset(
     train_dataset,
