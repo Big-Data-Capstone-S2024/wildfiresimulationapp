@@ -6,12 +6,25 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Listen for auth state changes
-if (typeof window !== "undefined") {
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      localStorage.setItem('supabaseSession', JSON.stringify(session));
-    } else {
-      localStorage.removeItem('supabaseSession');
-    }
-  });
-}
+supabase.auth.onAuthStateChange((event, session) => {
+  // Here you can trigger an API call to store the session in a cookie or 
+  // manage the session state through another secure mechanism.
+  if (event === 'SIGNED_IN') {
+    // You might want to save the session token securely here, e.g., through an API route
+    fetch('/api/storeSession', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sessionToken: session.access_token }),
+    });
+  } else if (event === 'SIGNED_OUT') {
+    // Clear the session
+    fetch('/api/clearSession', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+});

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient';
-import styles from '../styles/Header.module.css'; // Import Header styles
 
 export default function Header() {
   const [Email, setEmail] = useState('');
@@ -10,7 +9,7 @@ export default function Header() {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
         router.push('/login');
       } else {
@@ -24,12 +23,20 @@ export default function Header() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    localStorage.removeItem('supabaseSession'); // Clear session storage
+
+    // Call API to clear session from cookies
+    await fetch('/api/clearSession', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
     router.push('/login'); // Redirect to login page
   };
 
   return (
-    <header className={`flex items-center justify-between p-4 bg-white shadow-md ${styles.header}`}>
+    <header className="flex items-center justify-between p-4 bg-white shadow-md">
       <div className="flex items-center">
         <img
           src="/assets/logo.png"
@@ -39,7 +46,7 @@ export default function Header() {
         <h1 className="text-xl font-semibold">Wildfire Simulation</h1>
       </div>
       {Email && (
-        <div className={`flex items-center ml-auto text-gray-600 text-right ${styles['text-gray-600']}`}>
+        <div className="flex items-center ml-auto text-gray-600 text-right">
           <span className="mr-4">{Email}</span>
           <button
             onClick={handleLogout}
