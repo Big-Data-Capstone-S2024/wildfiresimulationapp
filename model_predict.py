@@ -1,13 +1,9 @@
 import pickle
 import torch
+import pandas as pd
 from pytorch_forecasting import TimeSeriesDataSet
 from pytorch_forecasting.models import TemporalFusionTransformer
 from pytorch_forecasting.metrics import QuantileLoss
-
-import torch
-print(f"PyTorch version: {torch.__version__}")
-print(f"CUDA available: {torch.cuda.is_available()}")
-print(f"Current device: {torch.cuda.current_device() if torch.cuda.is_available() else 'CPU'}")
 
 with open("model/train_dataset.pkl", "rb") as f:
     train_dataset = pickle.load(f)
@@ -46,16 +42,12 @@ best_model_path = "model/best-checkpoint.ckpt"
 
 state_dict = torch.load(best_model_path, map_location=torch.device('cpu'))
 best_tft.load_state_dict(state_dict['state_dict'], strict=False)
-# Load the model on CPU
-# best_tft = TemporalFusionTransformer.load_from_checkpoint(
-#     best_model_path, 
-#     map_location=torch.device('cpu'),  # Forces everything to CPU
-#     strict=False
-# )
+best_tft.eval()
 
+test_filled = pd.read_csv("testfilled.csv")
 validation_dataset = TimeSeriesDataSet.from_dataset(
     train_dataset,
-    #@ TODO get dataset,
+    test_filled,
     predict=True,
     stop_randomization=True,
 )
@@ -66,4 +58,17 @@ val_dataloader = validation_dataset.to_dataloader(train=False, batch_size=batch_
 if next(best_tft.parameters()).is_cuda:
     best_tft = best_tft.cpu()
 
-predictions = best_tft.predict(val_dataloader)
+test_prediction_results = best_tft.predict(
+    val_dataloader,
+    mode="raw",
+    return_index=True, # return the prediction index in the same order as the output
+    return_x=True, # return network inputs in the same order as prediction output
+    )
+
+median_predictions, _ = test_prediction_results.output.prediction.median(dim=1)
+median_predictions = median_predictions.cpu().numpy()[:,1]
+
+predictions_df = pd.DataFrame(median_predictions, columns=["prediction"])
+merged = pd.concat([test_prediction_results.index, predictions_df], axis=1)
+
+print("Merged", merged)
